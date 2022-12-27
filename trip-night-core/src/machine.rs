@@ -1,3 +1,5 @@
+use core::fmt;
+
 use crate::decode::decode_instruction;
 use crate::instruction::{InstructionSet, OpCode};
 use crate::screen::Screen;
@@ -56,6 +58,13 @@ impl Machine {
         let op = u16::from_be_bytes([first, second]);
         self.state.pc += 2;
         OpCode::new(op)
+    }
+}
+
+impl fmt::Display for Machine {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "------------ Machine ------------")?;
+        write!(f, "{}", self.state)
     }
 }
 
@@ -132,5 +141,30 @@ impl State {
         let reg_idx = usize::from(reg.get());
         self.registers[reg_idx] = self.registers[reg_idx].wrapping_sub(value);
         Flags::Nothing // FIXME
+    }
+}
+
+impl fmt::Display for State {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let pc_ram_start = usize::from(self.pc.0);
+        let pc_ram_end = pc_ram_start + 4;
+        let memory_at_pc = &self.ram[pc_ram_start..pc_ram_end];
+
+        let i_ram_start = usize::from(self.index.0);
+        let i_ram_end = i_ram_start + 4;
+        let memory_at_index = &self.ram[i_ram_start..i_ram_end];
+
+        writeln!(f, "pc: {}", self.pc)?;
+        writeln!(f, "ram[{pc_ram_start:03x}..{pc_ram_end:03x}]: {memory_at_pc:02x?}")?;
+        writeln!(f, "i: {}", self.index)?;
+        writeln!(f, "ram[{i_ram_start:03x}..{i_ram_end:03x}]: {memory_at_index:02x?}")?;
+        writeln!(f, "sp: {}", self.stack_pointer)?;
+        writeln!(f, "stack: {:?}", self.stack)?;
+        writeln!(f, "dt: {:02x}", self.delay_timer)?;
+        writeln!(f, "st: {:02x}", self.sound_timer)?;
+        writeln!(f, "registers: {:02x?}", self.registers)?;
+        write!(f, "screen:\n{}", self.screen)?;
+
+        Ok(())
     }
 }
