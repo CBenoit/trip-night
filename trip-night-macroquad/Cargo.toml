@@ -1,0 +1,11 @@
+[package]
+name = "trip-night-macroquad"
+version = "0.1.0"
+edition = "2021"
+description = "Macroquad frontend for Trip Night emulator, a CHIP-8 virtual machine in Rust"
+
+[dependencies]
+trip-night-core = { path = "../trip-night-core", version = "0.1.0" }
+trip-night-instruction = { path = "../trip-night-instruction", version = "0.1.0" }
+macroquad = "0.3.25"
+game_clock = "1.1.1"

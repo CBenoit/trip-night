@@ -1,0 +1,6 @@
+[workspace]
+members = [
+  "trip-night-core",
+  "trip-night-instruction",
+  "trip-night-macroquad",
+]

@@ -1,0 +1,8 @@
+[package]
+name = "trip-night-core"
+version = "0.1.0"
+edition = "2021"
+description = "Core implementation of Trip Night emulator, a CHIP-8 virtual machine in Rust"
+
+[dependencies]
+bit_field = "0.10.1"
