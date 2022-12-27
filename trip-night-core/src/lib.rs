@@ -6,13 +6,6 @@ pub mod instruction;
 pub mod machine;
 pub mod screen;
 
-// NOTE: I might want to use a bitfield instead
-pub enum Flags {
-    Nothing,
-    Overflow,
-    Underflow,
-}
-
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Address(pub u16);
 
@@ -68,7 +61,22 @@ impl core::ops::Index<Address> for [u8] {
 pub struct RegIdent(u8);
 
 impl RegIdent {
-    pub const F: Self = Self(0xF);
+    pub const V0: Self = Self(0x0);
+    pub const V1: Self = Self(0x1);
+    pub const V2: Self = Self(0x2);
+    pub const V3: Self = Self(0x3);
+    pub const V4: Self = Self(0x4);
+    pub const V5: Self = Self(0x5);
+    pub const V6: Self = Self(0x6);
+    pub const V7: Self = Self(0x7);
+    pub const V8: Self = Self(0x8);
+    pub const V9: Self = Self(0x9);
+    pub const VA: Self = Self(0xA);
+    pub const VB: Self = Self(0xB);
+    pub const VC: Self = Self(0xC);
+    pub const VD: Self = Self(0xD);
+    pub const VE: Self = Self(0xE);
+    pub const VF: Self = Self(0xF);
 
     pub fn get(self) -> u8 {
         self.0

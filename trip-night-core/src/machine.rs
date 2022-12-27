@@ -3,7 +3,7 @@ use core::fmt;
 use crate::decode::decode_instruction;
 use crate::instruction::{InstructionSet, OpCode};
 use crate::screen::Screen;
-use crate::{Address, Flags, RegIdent};
+use crate::{Address, RegIdent};
 
 /// A Chip8 virtual machine
 pub struct Machine {
@@ -129,18 +129,6 @@ impl State {
 
     pub fn reg_read(&mut self, reg: RegIdent) -> u8 {
         self.registers[usize::from(reg.get())]
-    }
-
-    pub fn reg_add(&mut self, reg: RegIdent, value: u8) -> Flags {
-        let reg_idx = usize::from(reg.get());
-        self.registers[reg_idx] = self.registers[reg_idx].wrapping_add(value);
-        Flags::Nothing // FIXME
-    }
-
-    pub fn reg_sub(&mut self, reg: RegIdent, value: u8) -> Flags {
-        let reg_idx = usize::from(reg.get());
-        self.registers[reg_idx] = self.registers[reg_idx].wrapping_sub(value);
-        Flags::Nothing // FIXME
     }
 }
 
