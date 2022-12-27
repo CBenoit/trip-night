@@ -1,10 +1,10 @@
-use game_clock::Time;
-use macroquad::prelude::*;
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::time::Duration;
+
+use game_clock::Time;
+use macroquad::prelude::*;
 use trip_night_core::machine::Machine;
-use trip_night_core::screen::PixelState;
 
 const PIXEL_SIZE: f32 = 16.0;
 const CLOCK_FREQUENCY: usize = 700;
@@ -13,7 +13,7 @@ const REFRESH_RATE: f64 = 30.0;
 #[macroquad::main("Trip Night VM")]
 async fn main() {
     let mut game_code = Vec::with_capacity(4096);
-    BufReader::new(File::open("ibm_logo.ch8").unwrap())
+    BufReader::new(File::open("games/ibm_logo.ch8").unwrap())
         .read_to_end(&mut game_code)
         .unwrap();
 
@@ -42,15 +42,10 @@ async fn main() {
 
             clear_background(BLACK);
 
-            for (x, y, state) in machine.screen().iter() {
-                match state {
-                    PixelState::Set => {
-                        let x = (x as f32) * PIXEL_SIZE;
-                        let y = (y as f32) * PIXEL_SIZE;
-                        draw_rectangle(x, y, PIXEL_SIZE, PIXEL_SIZE, WHITE);
-                    }
-                    PixelState::Unset => {}
-                }
+            for (x, y) in machine.screen().pixel_iter() {
+                let x = (x as f32) * PIXEL_SIZE;
+                let y = (y as f32) * PIXEL_SIZE;
+                draw_rectangle(x, y, PIXEL_SIZE, PIXEL_SIZE, WHITE);
             }
 
             next_frame().await;

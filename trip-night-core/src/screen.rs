@@ -90,10 +90,10 @@ impl Screen {
         ((self.inner[usize::from(y)] & mask) >> (56 - x)).try_into().unwrap()
     }
 
-    pub fn iter(&self) -> ScreenIter<'_> {
-        ScreenIter {
+    pub fn pixel_iter(&self) -> PixelIter<'_> {
+        PixelIter {
             screen: self,
-            x: 0,
+            current_row: self.inner[0],
             y: 0,
         }
     }
@@ -109,34 +109,33 @@ impl Screen {
     }
 }
 
-// TODO: iteration on set pixels only
-
-pub struct ScreenIter<'a> {
+pub struct PixelIter<'a> {
     screen: &'a Screen,
-    x: u8,
+    current_row: u64,
     y: u8,
 }
 
-impl<'a> Iterator for ScreenIter<'a> {
-    type Item = (u8, u8, PixelState);
+impl<'a> Iterator for PixelIter<'a> {
+    type Item = (u8, u8);
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.x >= 64 {
-            self.x = 0;
+        while self.current_row == 0 {
+            if self.y >= 31 {
+                return None;
+            }
+
             self.y += 1;
+            self.current_row = self.screen.inner[usize::from(self.y)];
         }
 
-        if self.y >= 32 {
-            return None;
-        }
+        // There is at most 64 leading zeros, this fits in an u8
+        let x = u8::try_from(self.current_row.leading_zeros()).unwrap();
 
-        let x = self.x;
-        let y = self.y;
-        let pixel_state = self.screen.get_pixel(x, y);
+        // Flip the leading one
+        let mask = (0x1 << 63) >> x;
+        self.current_row &= !mask;
 
-        self.x += 1;
-
-        Some((x, y, pixel_state))
+        Some((x, self.y))
     }
 }
 
