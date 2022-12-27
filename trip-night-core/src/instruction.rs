@@ -1,5 +1,6 @@
 use bit_field::BitField as _;
 
+use crate::decode::DecodeOpCode;
 use crate::machine::State;
 use crate::{Address, RegIdent};
 
@@ -149,3 +150,23 @@ where
 }
 
 pub type InstructionSet = [&'static dyn Instruction; 34];
+
+/// Builds an NOP-only instruction set for placeholding purposes
+pub fn make_nop_set() -> InstructionSet {
+    [make_instruction!(Nop::execute); 34]
+}
+
+/// NOP (No Operation)
+///
+/// A placeholder for unsupported instructions.
+pub struct Nop;
+
+impl DecodeOpCode for Nop {
+    fn decode(_: OpCode) -> Self {
+        Self
+    }
+}
+
+impl Nop {
+    pub fn execute(self, _: &mut State) {}
+}

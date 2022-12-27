@@ -5,16 +5,11 @@ use trip_night_core::instruction::{InstructionSet, OpCode};
 use trip_night_core::machine::State;
 use trip_night_core::{Address, RegIdent};
 
-pub fn make_noop_set() -> InstructionSet {
-    fn noop(_: OpCode, _: &mut State) {}
-    [&noop; 34]
-}
-
 pub fn make_standard_set() -> InstructionSet {
     use trip_night_core::instruction::*;
     use trip_night_core::make_instruction;
 
-    let mut set = make_noop_set();
+    let mut set = make_nop_set();
 
     // 0×××
     set[OP_00E0] = make_instruction!(ClearScreen::execute);
